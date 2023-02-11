@@ -1,0 +1,2 @@
+pyrogram>=2.0.58
+dotenv
