@@ -20,6 +20,9 @@ RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token
 async def start_message(RaidenBot, message):
     await RaidenBot.send_photo(message.chat.id, photo=".images/profile_picture.png", caption="<i>**Hello, this is still in development, please try again later!**</i>")
 
+@RaidenBot.on_message(filters.command("about"))
+async def about_message(RaidenBot, message):
+    await RaidenBot.send_message(message.chat.id, "Teste")
 
 print("Running...")
 RaidenBot.run()
