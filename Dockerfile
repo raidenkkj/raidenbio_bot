@@ -1,4 +1,4 @@
-FROM python:3.5-alpine
+FROM python:3
 MAINTAINER RaidenIshigami <contact.raidenishigami69@gmail.com>
 
 RUN mkdir -p /usr/src/app
