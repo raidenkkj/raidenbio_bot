@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 
 COPY requirements.txt /usr/src/app/
 RUN /usr/local/bin/python -m pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir --no-python-version-warning -r requirements.txt
 COPY . /usr/src/app
 RUN py.test -m 'A vida é dura mas meu pau é mais'
 
