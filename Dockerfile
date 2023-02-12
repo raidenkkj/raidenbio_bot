@@ -16,5 +16,3 @@ RUN pip3 install -U setuptools wheel && \
 COPY . .
 
 CMD ["python3","main.py"]
-
-FROM python:3
