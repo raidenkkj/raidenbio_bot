@@ -1,20 +1,20 @@
-FROM python:3
-# MAINTAINER RaidenIshigami <contact.raidenishigami69@gmail.com>
+FROM python:3.9-slim-bullseye
 
-RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY requirements.txt /usr/src/app/
-RUN /usr/local/bin/python -m pip install --upgrade pip
-RUN pip3 install --no-cache-dir --no-python-version-warning -r requirements.txt
-COPY . /usr/src/app
-RUN py.test -m 'A vida é dura mas meu pau é mais'
+RUN apt-get update && apt-get upgrade -y
 
-ENV APP_ID ''
-ENV API_HASH ''
-ENV BOT_TOKEN ''
-ENV SCAN_DALAY_SEC 60
-ENV STATSD_HOST ''
-ENV STATSD_PORT 8125
+RUN apt-get install git  python3-pip -y
 
-CMD [ "python", "main.py" ]
+RUN pip3 install --upgrade pip
+
+COPY requirements.txt .
+
+RUN pip3 install -U setuptools wheel && \
+    pip3 install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python3","main.py"]
+
+FROM python:3
