@@ -24,5 +24,8 @@ async def start_message(RaidenBot, message):
 async def about_message(RaidenBot, message):
     await RaidenBot.send_message(message.chat.id, "Teste")
 
+@RaidenBot.on_message(filters.command("mais"))
+async def mais_message(RaidenBot, message):
+    await RaidenBot.send_message(message.chat.id, "**Language:** ga -> en\n**Message:** Mais\n**Translation:** Mas")
 print("Running...")
 RaidenBot.run()
