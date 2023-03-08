@@ -49,5 +49,15 @@ async def add_command_handler(RaidenBot, message):
     else:
         await RaidenBot.send_message(chat_id=message.chat.id, text=f"{username} is already in the banned list.")
 
+@RaidenBot.on_message(filters.command("banlist"))
+async def banlist_command_handler(RaidenBot, message):
+    banned_users_text = "Banned users in this group are:\n"
+    if BANNED_USERNAMES:
+        banned_users_text += "\n".join(BANNED_USERNAMES)
+    else:
+        banned_users_text += "No banned users."
+    
+    await RaidenBot.send_message(chat_id=message.chat.id, text=banned_users_text)
+
 print("Running...")
 RaidenBot.run()
