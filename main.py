@@ -15,21 +15,6 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
 
 
-# Define the ID of the log group
-LOG_GROUP_ID = -827778569
-
-# Function to send log message
-async def send_log_message(message):
-    # Get user info
-    user = message.from_user
-    user_info = f"{user.id} ({user.first_name} {user.last_name})"
-
-    # Create log message
-    log_message = f"Bot started by {user_info} in chat {message.chat.id} ({message.chat.title})"
-
-    # Send log message to log group
-    await RaidenBot.send_message(chat_id=LOG_GROUP_ID, text=log_message)
-
 @RaidenBot.on_message(filters.command("start"))
 async def start_command_handler(RaidenBot, message):
     # Check if the user is the developer
@@ -43,10 +28,11 @@ async def start_command_handler(RaidenBot, message):
     chat_id=message.chat.id,
     text=text,
     reply_to_message_id=message.id
-)
+    )
 
     # Send log message
-    await send_log_message(message)
+    log_message = f"{username} ({user_id}) started the bot"
+    await RaidenBot.send_message(-827778569, log_message)
 
 # Define the list of banned usernames
 BANNED_USERNAMES = ["*CP*"]
