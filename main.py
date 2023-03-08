@@ -77,7 +77,7 @@ async def gitprofile_command_handler(RaidenBot, message):
             chat_id=message.chat.id,
             photo=avatar_url,
             caption=message_text,
-            parse_mode="MarkdownV2",
+            parse_mode="Markdown",
         )
     else:
         await message.reply_text("User not found.")
