@@ -36,16 +36,42 @@ async def gitprofile_command_handler(RaidenBot, message):
     data = response.json()
 
     if response.status_code == 200:
-        profile_picture_url = data["avatar_url"]
-        name = data["name"]
-        bio = data["bio"]
-        followers = data["followers"]
-        following = data["following"]
-        public_repos = data["public_repos"]
+        name = data.get("name", "N/A")
+        login = data.get("login", "N/A")
+        company = data.get("company", "N/A")
+        blog = data.get("blog", "N/A")
+        location = data.get("location", "N/A")
+        bio = data.get("bio", "N/A")
+        followers = data.get("followers", 0)
+        following = data.get("following", 0)
+        public_repos = data.get("public_repos", 0)
+        public_gists = data.get("public_gists", 0)
+        created_at = data.get("created_at", "N/A")
+        updated_at = data.get("updated_at", "N/A")
+        repos_url = data.get("repos_url")
 
-        caption = f"<b>{name}</b>\n<b>Followers:</b> {followers}\n<b>Following:</b> {following}\n<b>Public Repos:</b> {public_repos}"
+        # Get the 5 most recently updated repositories
+        response = requests.get(repos_url)
+        repos = response.json()[:5]
+        repo_list = "\n".join([repo["name"] for repo in repos])
 
-        await RaidenBot.send_photo(chat_id=message.chat.id, photo=profile_picture_url, caption=caption)
+        message_text = (
+            f"👤 Name : {name}\n"
+            f"🔧 Type : User\n"
+            f"🏢 Company : {company}\n"
+            f"🔭 Blog : {blog}\n"
+            f"📍 Location : {location}\n"
+            f"📝 Bio : {bio}\n"
+            f"❤️ Followers : {followers}\n"
+            f"👁 Following : {following}\n"
+            f"📊 Public Repos : {public_repos}\n"
+            f"📄 Public Gists : {public_gists}\n"
+            f"🔗 Profile Created : {created_at}\n"
+            f"✏️ Profile Updated : {updated_at}\n"
+            f"🔍 Some Repos : {repo_list}"
+        )
+
+        await RaidenBot.send_message(chat_id=message.chat.id, text=message_text)
     else:
         await message.reply_text("User not found.")
 
