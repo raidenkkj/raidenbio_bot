@@ -49,11 +49,12 @@ async def gitprofile_command_handler(RaidenBot, message):
         created_at = data.get("created_at", "N/A")
         updated_at = data.get("updated_at", "N/A")
         repos_url = data.get("repos_url")
+        avatar_url = data.get("avatar_url")
 
         # Get the 5 most recently updated repositories
         response = requests.get(repos_url)
         repos = response.json()[:5]
-        repo_list = "\n".join([repo["name"] for repo in repos])
+        repo_list = "\n".join([f"[{repo['name']}]({repo['html_url']})" for repo in repos])
 
         message_text = (
             f"👤 Name : {name}\n"
@@ -62,16 +63,22 @@ async def gitprofile_command_handler(RaidenBot, message):
             f"🔭 Blog : {blog}\n"
             f"📍 Location : {location}\n"
             f"📝 Bio : {bio}\n"
-            f"❤️ Followers : {followers}\n"
-            f"👁 Following : {following}\n"
-            f"📊 Public Repos : {public_repos}\n"
-            f"📄 Public Gists : {public_gists}\n"
+            f"❤️ Followers : *{followers}*\n"
+            f"👁 Following : *{following}*\n"
+            f"📊 Public Repos : *{public_repos}*\n"
+            f"📄 Public Gists : *{public_gists}*\n"
             f"🔗 Profile Created : {created_at}\n"
             f"✏️ Profile Updated : {updated_at}\n"
             f"🔍 Some Repos : {repo_list}"
         )
 
-        await RaidenBot.send_message(chat_id=message.chat.id, text=message_text)
+        # Send message with photo
+        await RaidenBot.send_photo(
+            chat_id=message.chat.id,
+            photo=avatar_url,
+            caption=message_text,
+            parse_mode="MarkdownV2",
+        )
     else:
         await message.reply_text("User not found.")
 
