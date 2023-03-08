@@ -41,6 +41,11 @@ async def start_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("add"))
 async def add_command_handler(RaidenBot, message):
+    # Check if the message was sent in a group chat
+    if not message.chat.type == "group" and not message.chat.type == "supergroup":
+        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups.")
+        return
+
     # Extract the command argument
     command_parts = message.text.split()
     if len(command_parts) != 2:
@@ -58,6 +63,11 @@ async def add_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("remove"))
 async def remove_command_handler(RaidenBot, message):
+    # Check if the message was sent in a group chat
+    if not message.chat.type == "group" and not message.chat.type == "supergroup":
+        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups.")
+        return
+
     # Extract the command argument
     command_parts = message.text.split()
     if len(command_parts) != 2:
@@ -74,6 +84,11 @@ async def remove_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("banlist"))
 async def banlist_command_handler(RaidenBot, message):
+    # Check if the message was sent in a group chat
+    if not message.chat.type == "group" and not message.chat.type == "supergroup":
+        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups.")
+        return
+
     banned_users_text = "Banned users in this group are:\n"
     if BANNED_USERNAMES:
         banned_users_text += "\n".join(BANNED_USERNAMES)
