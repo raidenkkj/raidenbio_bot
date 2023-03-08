@@ -20,7 +20,7 @@ async def start_command_handler(RaidenBot, message):
     username = message.from_user.username
     
     log_message = f"{username} ({user_id}) started the bot"
-    await RaidenBot.send_message(-1001481103326, log_message)
+    await RaidenBot.send_message(-827778569, log_message)
 
     await message.reply_photo(photo=".images/profile_picture.png", caption="<i>**Hello, this is still in development, please try again later!**</i>")
 
