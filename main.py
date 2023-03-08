@@ -15,18 +15,14 @@ RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token
 
 
 @RaidenBot.on_message(filters.command("start"))
-async def start_message(RaidenBot, message):
-    await RaidenBot.send_photo(message.chat.id, photo=".images/profile_picture.png", caption="<i>**Hello, this is still in development, please try again later!**</i>")
-
-log_chat_id = -827778569
-
-@RaidenBot.on_message(filters.private & filters.command("start"))
 async def start_command_handler(RaidenBot, message):
     user_id = message.from_user.id
     username = message.from_user.username
     
     log_message = f"{username} ({user_id}) started the bot"
-    await RaidenBot.send_message(log_chat_id, log_message)
+    await RaidenBot.send_message(-1001481103326, log_message)
+
+    await message.reply_photo(photo=".images/profile_picture.png", caption="<i>**Hello, this is still in development, please try again later!**</i>")
 
 
 print("Running...")
