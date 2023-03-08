@@ -11,7 +11,7 @@ API_HASH = os.environ.get("API_HASH")
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 # Define the list of banned usernames
-BANNED_USERNAMES = ["*CP*", "*C P*"]
+BANNED_USERNAMES = ["*CP*"]
 
 RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
 
@@ -57,7 +57,6 @@ async def callback_query_handler(RaidenBot, query):
             await RaidenBot.edit_message_reply_markup(chat_id=query.message.chat.id, message_id=query.message.message_id, reply_markup=markup)
             # Send a confirmation message
             await RaidenBot.answer_callback_query(query.id, text=f"Unbanned {banned_username}")
-
 
 print("Running...")
 RaidenBot.run()
