@@ -14,6 +14,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
 
+
 # Define the ID of the log group
 LOG_GROUP_ID = -827778569
 
@@ -45,8 +46,6 @@ async def start_command_handler(RaidenBot, message):
 
 # Define the list of banned usernames
 BANNED_USERNAMES = ["*CP*"]
-
-RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
 
 @RaidenBot.on_message(filters.new_chat_members)
 async def ban_new_members(RaidenBot, message):
