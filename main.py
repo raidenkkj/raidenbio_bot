@@ -41,6 +41,13 @@ async def start_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("add"))
 async def add_command_handler(RaidenBot, message):
+    # Extract the command argument
+    command_parts = message.text.split()
+    if len(command_parts) != 2:
+        await RaidenBot.send_message(chat_id=message.chat.id, text="Please specify a username to remove.")
+        return
+    username = command_parts[1]
+
     # Add the username to the banned list
     username = message.text.split()[1]
     if username not in BANNED_USERNAMES:
@@ -48,6 +55,22 @@ async def add_command_handler(RaidenBot, message):
         await RaidenBot.send_message(chat_id=message.chat.id, text=f"Added username {username} to the banned list.")
     else:
         await RaidenBot.send_message(chat_id=message.chat.id, text=f"{username} is already in the banned list.")
+
+@RaidenBot.on_message(filters.command("remove"))
+async def remove_command_handler(RaidenBot, message):
+    # Extract the command argument
+    command_parts = message.text.split()
+    if len(command_parts) != 2:
+        await RaidenBot.send_message(chat_id=message.chat.id, text="Please specify a username to remove.")
+        return
+    username = command_parts[1]
+
+    # Remove the username from the banned list
+    if username in BANNED_USERNAMES:
+        BANNED_USERNAMES.remove(username)
+        await RaidenBot.send_message(chat_id=message.chat.id, text=f"Removed username {username} from the banned list.")
+    else:
+        await RaidenBot.send_message(chat_id=message.chat.id, text=f"{username} is not in the banned list.")
 
 @RaidenBot.on_message(filters.command("banlist"))
 async def banlist_command_handler(RaidenBot, message):
