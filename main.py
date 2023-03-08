@@ -14,6 +14,8 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
 
+# Define the list of banned usernames
+BANNED_USERNAMES = []
 
 @RaidenBot.on_message(filters.command("start"))
 async def start_command_handler(RaidenBot, message):
@@ -37,26 +39,18 @@ async def start_command_handler(RaidenBot, message):
     log_message = f"{username} ({user_id}) started the bot"
     await RaidenBot.send_message(-827778569, log_message)
 
-# Define the list of banned usernames
-BANNED_USERNAMES = ["*CP*"]
-
-@RaidenBot.on_message(filters.new_chat_members)
-async def ban_new_members(RaidenBot, message):
-    for user in message.new_chat_members:
-        if user.username and any(re.search(username.replace("*", ".*"), user.username, re.IGNORECASE) for username in BANNED_USERNAMES):
-
-            await RaidenBot.kick_chat_member(chat_id=message.chat.id, user_id=user.id)
-            await RaidenBot.send_message(chat_id=message.chat.id, text=f"Banned user {user.first_name} ({user.username}) from joining the group.")
-
-@RaidenBot.on_message(filters.command("ban_list"))
-async def ban_command_handler(RaidenBot, message):
-    for arg in message.command[1:]:
-        if arg not in BANNED_USERNAMES:
-            BANNED_USERNAMES.append(arg)
-            await RaidenBot.send_message(chat_id=message.chat.id, text=f"Added username {arg} to the banned list.")
+@RaidenBot.on_message(filters.command("add"))
+async def add_command_handler(RaidenBot, message):
+    # Add the username to the banned list
+    username = message.text.split()[1]
+    if username not in BANNED_USERNAMES:
+        BANNED_USERNAMES.append(username)
+        await RaidenBot.send_message(chat_id=message.chat.id, text=f"Added username {username} to the banned list.")
+    else:
+        await RaidenBot.send_message(chat_id=message.chat.id, text=f"{username} is already in the banned list.")
 
 @RaidenBot.on_message(filters.command("ban_list"))
-async def ban_command_handler(RaidenBot, message):
+async def ban_list_command_handler(RaidenBot, message):
     # Create a list of banned usernames as clickable buttons
     banned_usernames_list = []
     for banned_username in BANNED_USERNAMES:
