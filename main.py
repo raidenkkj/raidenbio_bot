@@ -20,10 +20,11 @@ async def ban_new_members(RaidenBot, message):
     for user in message.new_chat_members:
         if user.username and any(re.search(username.replace("*", ".*"), user.username, re.IGNORECASE) for username in BANNED_USERNAMES):
 
+
             await RaidenBot.kick_chat_member(chat_id=message.chat.id, user_id=user.id)
             await RaidenBot.send_message(chat_id=message.chat.id, text=f"Banned user {user.first_name} ({user.username}) from joining the group.")
 
-@RaidenBot.on_message(filters.command("ban"))
+@RaidenBot.on_message(filters.command("ban_list"))
 async def ban_command_handler(RaidenBot, message):
     for arg in message.command[1:]:
         if arg not in BANNED_USERNAMES:
