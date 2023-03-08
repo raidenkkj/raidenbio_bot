@@ -20,12 +20,16 @@ RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token
 async def start_message(RaidenBot, message):
     await RaidenBot.send_photo(message.chat.id, photo=".images/profile_picture.png", caption="<i>**Hello, this is still in development, please try again later!**</i>")
 
-@RaidenBot.on_message(filters.command("about"))
-async def about_message(RaidenBot, message):
-    await RaidenBot.send_message(message.chat.id, "Teste")
+log_chat_id = -827778569
 
-@RaidenBot.on_message(filters.command("mais"))
-async def mais_message(RaidenBot, message):
-    await RaidenBot.send_message(message.chat.id, "**Language:** ga -> en\n**Message:** Mais\n**Translation:** Mas")
+@RaidenBot.on_message(filters.command("start"))
+async def start_command_handler(RaidenBot, message):
+    user_id = message.from_user.id
+    username = message.from_user.username
+    
+    log_message = f"{username} ({user_id}) started the bot"
+    await client.send_message(log_chat_id, log_message
+
+
 print("Running...")
 RaidenBot.run()
