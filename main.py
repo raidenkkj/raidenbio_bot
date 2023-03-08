@@ -36,7 +36,7 @@ async def start_command_handler(RaidenBot, message):
     if message.from_user.id == 1123864418:
         text = "Hello master, i don't need to explain what i do because you already know ^^"
     else:
-        text = "Hi, i'm Power! I am a group management bot. Use the /help command to see a list of available commands."
+        text = "Hi {message.from_user.first_name}, i'm Power! I am a group management bot. Use the /help command to see a list of available commands."
     
     # Send the message
     await RaidenBot.send_message(chat_id=message.chat.id, text=text)
