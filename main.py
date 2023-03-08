@@ -31,6 +31,9 @@ async def start_command_handler(RaidenBot, message):
     )
 
     # Send log message
+    user_id = message.from_user.id
+    username = message.from_user.username
+
     log_message = f"{username} ({user_id}) started the bot"
     await RaidenBot.send_message(-827778569, log_message)
 
