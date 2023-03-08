@@ -39,7 +39,13 @@ async def start_command_handler(RaidenBot, message):
         text = f"Hi {message.from_user.first_name}, i'm Power! I am a group management bot. Use the /help command to see a list of available commands."
     
     # Send the message and reply directly to the user who sent the command
-    sent_message = await RaidenBot.send_message(chat_id=message.chat.id, text=text, reply_to_message_id=message.message_id)
+    sent_message = await RaidenBot.send_message(
+    chat_id=message.chat.id,
+    text=text,
+    reply_to_message_id=message.message_id,
+    reply_markup=None,
+    disable_web_page_preview=True
+)
 
     # Send log message
     await send_log_message(message)
