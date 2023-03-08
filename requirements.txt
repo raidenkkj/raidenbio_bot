@@ -2,4 +2,4 @@ python-dotenv
 pyrogram
 tgcrypto
 requests
-pyrogram_pluginbase
+pluginbase
