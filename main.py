@@ -1,5 +1,3 @@
-## bot do raiden
-
 import os
 from pyrogram import Client, filters
 from dotenv import load_dotenv
@@ -22,13 +20,13 @@ async def start_message(RaidenBot, message):
 
 log_chat_id = -827778569
 
-@RaidenBot.on_message(filters.command("start"))
+@RaidenBot.on_message(filters.private & filters.command("start"))
 async def start_command_handler(RaidenBot, message):
     user_id = message.from_user.id
     username = message.from_user.username
     
     log_message = f"{username} ({user_id}) started the bot"
-    await client.send_message(log_chat_id, log_message
+    await RaidenBot.send_message(log_chat_id, log_message)
 
 
 print("Running...")
