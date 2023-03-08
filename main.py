@@ -1,4 +1,4 @@
-# Power (raiden bot)
+# Power (raiden bot).
 
 from pyrogram import Client
 from pyrogram_pluginbase import PluginBase
