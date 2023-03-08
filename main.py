@@ -11,14 +11,15 @@ API_HASH = os.environ.get("API_HASH")
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 # Define the list of banned usernames
-BANNED_USERNAMES = ["CP", "C P", "C.P"]
+BANNED_USERNAMES = ["*CP*", "*C P*"]
 
 RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
 
 @RaidenBot.on_message(filters.new_chat_members)
 async def ban_new_members(RaidenBot, message):
     for user in message.new_chat_members:
-        if user.username and any(re.search(username, user.username, re.IGNORECASE) for username in BANNED_USERNAMES):
+        if user.username and any(re.search(username.replace("*", ".*"), user.username, re.IGNORECASE) for username in BANNED_USERNAMES):
+
             await RaidenBot.kick_chat_member(chat_id=message.chat.id, user_id=user.id)
             await RaidenBot.send_message(chat_id=message.chat.id, text=f"Banned user {user.first_name} ({user.username}) from joining the group.")
 
