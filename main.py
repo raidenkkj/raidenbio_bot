@@ -1,6 +1,7 @@
 # Power (raiden bot)
 
-from pyrogram import Client, filters
+from pyrogram import Client
+from pyrogram_pluginbase import PluginBase
 from dotenv import load_dotenv
 import os
 import re
@@ -12,7 +13,10 @@ API_ID = int(os.environ.get("API_ID"))
 API_HASH = os.environ.get("API_HASH")
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
-RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
+# Create a plugin base object
+plugin_base = PluginBase()
+
+RaidenBot = Client("RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, plugins=plugin_base)
 
 # Define the ID of the log group
 LOG_GROUP_ID = -827778569
@@ -30,7 +34,7 @@ async def send_log_message(message):
     await RaidenBot.send_message(chat_id=LOG_GROUP_ID, text=log_message)
 
 @RaidenBot.on_command("start")
-async def start_command_handler(RaidenBot, message):
+async def start_command_handler(client, message):
     # Check if the user is the developer
     if message.from_user.id == 1123864418:
         text = "Hello master, i don't need to explain what i do because you already know ^^"
