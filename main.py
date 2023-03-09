@@ -145,5 +145,12 @@ async def banlist_command_handler(RaidenBot, message):
     
     await RaidenBot.send_message(chat_id=message.chat.id, text=banned_users_text)
 
+@RaidenBot.on_message(filters.command("teste"))
+def testeeeeee_teste(client, message):
+    if message.chat.type == "private":
+        RaidenBot.send_message(message.chat.id, "This command cannot be used in private chats.")
+    else:
+        RaidenBot.send_message(message.chat.id, "Hello, group members!")
+
 print("Running...")
 RaidenBot.run()
