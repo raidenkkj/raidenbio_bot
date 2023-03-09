@@ -147,11 +147,12 @@ async def banlist_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("current"))
 async def current_command_handler(RaidenBot, message):
-    if message.chat.type == "private":
-        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
-        return
+    chat_type = message.chat.type
+    if chat_type == "private":
+        response_text = "This command can only be used in groups and supergroups."
     else:
-        await RaidenBot.send_message(chat_id=message.chat.id, text="Hello World!!!")
+        response_text = f"Hello World!!! This command was sent in a {chat_type} chat."
+    await message.reply_text(response_text)
 
 print("Running...")
 RaidenBot.run()
