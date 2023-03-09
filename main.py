@@ -1,4 +1,4 @@
-# Power (raiden bot).
+# Power source code, a telegram bot.
 
 from pyrogram import Client, filters
 from dotenv import load_dotenv
