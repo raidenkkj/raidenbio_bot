@@ -15,6 +15,15 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
 
+# Define a dictionary of available commands and their descriptions
+COMMANDS = {
+    "/start": "Start the bot",
+    "/help": "Show a list of available commands",
+    "/add <username>": "Add user to ban list",
+    "/remove <username>": "Removes the specified user from the ban list",
+    "/banlist": "Shows the list of users who are on the ban list",
+}
+
 # Create a SQLite database and table to store the banned usernames
 conn = sqlite3.connect('banned_usernames.db')
 c = conn.cursor()
@@ -120,6 +129,17 @@ async def banlist_command_handler(RaidenBot, message):
         banned_users_text += "No banned users."
     
     await RaidenBot.send_message(chat_id=message.chat.id, text=banned_users_text)
+
+@RaidenBot.on_message(filters.command("help"))
+async def help_command_handler(RaidenBot, message):
+    # Create a list of lines for the help message
+    lines = ["Available commands:"]
+    for command, description in COMMANDS.items():
+        lines.append(f"{command} - {description}")
+    help_message = "\n".join(lines)
+    
+    # Send the help message to the user
+    message.reply_text(help_message)
 
 print("Running...")
 RaidenBot.run()
