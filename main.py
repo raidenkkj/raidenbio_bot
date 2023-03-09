@@ -4,6 +4,7 @@ from pyrogram import Client, filters
 from dotenv import load_dotenv
 import os
 import re
+import sqlite3
 
 if os.path.isfile("config.env"):
     load_dotenv("config.env")
@@ -14,8 +15,46 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 RaidenBot = Client(name="RaidenBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
 
-# Define the list of banned usernames
-BANNED_USERNAMES = []
+# Create a SQLite database and table to store the banned usernames
+conn = sqlite3.connect('banned_usernames.db')
+c = conn.cursor()
+c.execute('''CREATE TABLE IF NOT EXISTS banned_usernames
+             (group_id INTEGER, banned_usernames TEXT)''')
+conn.commit()
+
+# Define a function to get the banned usernames for a group from the database
+def get_banned_usernames(group_id):
+    c.execute("SELECT banned_usernames FROM banned_usernames WHERE group_id = ?", (group_id,))
+    banned_usernames = c.fetchone()
+    if banned_usernames is None:
+        return []
+    else:
+        return banned_usernames[0].split(',')
+
+# Define a function to add a banned username for a group to the database
+def add_banned_username(group_id, username):
+    banned_usernames = get_banned_usernames(group_id)
+    if username not in banned_usernames:
+        banned_usernames.append(username)
+        c.execute("INSERT INTO banned_usernames (group_id, banned_usernames) VALUES (?, ?)", (group_id, ','.join(banned_usernames)))
+        conn.commit()
+
+# Define a function to remove a banned username for a group from the database
+def remove_banned_username(group_id, username):
+    banned_usernames = get_banned_usernames(group_id)
+    if username in banned_usernames:
+        banned_usernames.remove(username)
+        c.execute("UPDATE banned_usernames SET banned_usernames = ? WHERE group_id = ?", (','.join(banned_usernames), group_id))
+        conn.commit()
+
+# Define a function to get the banned usernames for all groups from the database
+def get_all_banned_usernames():
+    c.execute("SELECT group_id, banned_usernames FROM banned_usernames")
+    banned_usernames = c.fetchall()
+    return {group_id: usernames.split(',') for group_id, usernames in banned_usernames}
+
+# Define the list of banned usernames for all groups
+BANNED_USERNAMES = get_all_banned_usernames()
 
 @RaidenBot.on_message(filters.command("start"))
 async def start_command_handler(RaidenBot, message):
@@ -41,9 +80,9 @@ async def start_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("add"))
 async def add_command_handler(RaidenBot, message):
-    # Check if the message was sent in a group chat
-    if not message.chat.type == "group" and not message.chat.type == "supergroup":
-        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups.")
+    # Check if the message was sent in a group chat or supergroup
+    if message.chat.type not in ["group", "supergroup"]:
+        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
         return
 
     # Extract the command argument
@@ -63,9 +102,9 @@ async def add_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("remove"))
 async def remove_command_handler(RaidenBot, message):
-    # Check if the message was sent in a group chat
-    if not message.chat.type == "group" and not message.chat.type == "supergroup":
-        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups.")
+    # Check if the message was sent in a group chat or supergroup
+    if message.chat.type not in ["group", "supergroup"]:
+        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
         return
 
     # Extract the command argument
@@ -84,9 +123,9 @@ async def remove_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("banlist"))
 async def banlist_command_handler(RaidenBot, message):
-    # Check if the message was sent in a group chat
-    if not message.chat.type == "group" and not message.chat.type == "supergroup":
-        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups.")
+    # Check if the message was sent in a group chat or supergroup
+    if message.chat.type not in ["group", "supergroup"]:
+        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
         return
 
     banned_users_text = "Banned users in this group are:\n"
