@@ -80,13 +80,13 @@ async def start_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("add"))
 async def add_command_handler(RaidenBot, message):
-    # Check if the message was sent in private
+    # Check if the message was sent in a group chat or supergroup
     chat_type = message.chat.type
-    if chat_type == "ChatType.PRIVATE":
+    if chat_type == "ChatType.GROUP" or chat_type == "ChatType.SUPERGROUP":
+        pass
+    else:
         await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
         return
-    else:
-        pass
 
     # Extract the command argument
     command_parts = message.text.split()
@@ -105,13 +105,13 @@ async def add_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("remove"))
 async def remove_command_handler(RaidenBot, message):
-    # Check if the message was sent in private
+    # Check if the message was sent in a group chat or supergroup
     chat_type = message.chat.type
-    if chat_type == "ChatType.PRIVATE":
+    if chat_type == "ChatType.GROUP" or chat_type == "ChatType.SUPERGROUP":
+        pass
+    else:
         await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
         return
-    else:
-        pass
 
     # Extract the command argument
     command_parts = message.text.split()
@@ -129,13 +129,13 @@ async def remove_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("banlist"))
 async def banlist_command_handler(RaidenBot, message):
-    # Check if the message was sent in private
+    # Check if the message was sent in a group chat or supergroup
     chat_type = message.chat.type
-    if chat_type == "ChatType.PRIVATE":
+    if chat_type == "ChatType.GROUP" or chat_type == "ChatType.SUPERGROUP":
+        pass
+    else:
         await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
         return
-    else:
-        pass
 
     banned_users_text = "Banned users in this group are:\n"
     if BANNED_USERNAMES:
@@ -147,12 +147,13 @@ async def banlist_command_handler(RaidenBot, message):
 
 @RaidenBot.on_message(filters.command("current"))
 async def current_command_handler(RaidenBot, message):
+    # Check if the message was sent in a group chat or supergroup
     chat_type = message.chat.type
-    if chat_type == "ChatType.PRIVATE":
-        response_text = "This command can only be used in groups and supergroups."
+    if chat_type == "ChatType.GROUP" or chat_type == "ChatType.SUPERGROUP":
+        pass
     else:
-        response_text = f"Hello World!!! This command was sent in a {chat_type} chat."
-    await message.reply_text(response_text)
+        await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
+        return
 
 print("Running...")
 RaidenBot.run()
