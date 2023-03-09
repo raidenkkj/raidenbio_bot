@@ -81,7 +81,10 @@ async def start_command_handler(RaidenBot, message):
 @RaidenBot.on_message(filters.command("add"))
 async def add_command_handler(RaidenBot, message):
     # Check if the message was sent in a group chat or supergroup
-    if message.chat.type not in ["group", "supergroup"]:
+    chat_type = message.chat.type
+    if chat_type == "group" or chat_type == "supergroup":
+        pass
+    else:
         await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
         return
 
@@ -103,7 +106,10 @@ async def add_command_handler(RaidenBot, message):
 @RaidenBot.on_message(filters.command("remove"))
 async def remove_command_handler(RaidenBot, message):
     # Check if the message was sent in a group chat or supergroup
-    if message.chat.type not in ["group", "supergroup"]:
+    chat_type = message.chat.type
+    if chat_type == "group" or chat_type == "supergroup":
+        pass
+    else:
         await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
         return
 
@@ -124,7 +130,10 @@ async def remove_command_handler(RaidenBot, message):
 @RaidenBot.on_message(filters.command("banlist"))
 async def banlist_command_handler(RaidenBot, message):
     # Check if the message was sent in a group chat or supergroup
-    if message.chat.type not in ["group", "supergroup"]:
+    chat_type = message.chat.type
+    if chat_type == "group" or chat_type == "supergroup":
+        pass
+    else:
         await RaidenBot.send_message(chat_id=message.chat.id, text="This command can only be used in groups and supergroups.")
         return
 
