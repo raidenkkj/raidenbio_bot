@@ -145,12 +145,26 @@ async def banlist_command_handler(RaidenBot, message):
     
     await RaidenBot.send_message(chat_id=message.chat.id, text=banned_users_text)
 
-@RaidenBot.on_message(filters.command("teste"))
-def testeeeeee_teste(client, message):
-    if pyrogram.types.Chat == "BOT":
-        RaidenBot.send_message(message.chat.id, "This command cannot be used in private chats.")
+@RaidenBot.on_message(filters.command("current"))
+async def current_command_handler(RaidenBot, message):
+    chat_type = get_chat_type(message.chat.type)
+    response_message = f"The current chat type is {chat_type}"
+    message.reply_text(response_message)
+
+
+def get_chat_type(chat_type: str) -> str:
+    if chat_type == "private":
+        return ChatType.PRIVATE.value
+    elif chat_type == "bot":
+        return ChatType.BOT.value
+    elif chat_type == "group":
+        return ChatType.GROUP.value
+    elif chat_type == "supergroup":
+        return ChatType.SUPERGROUP.value
+    elif chat_type == "channel":
+        return ChatType.CHANNEL.value
     else:
-        RaidenBot.send_message(message.chat.id, "Hello, group members!")
+        return "unknown"
 
 print("Running...")
 RaidenBot.run()
