@@ -1,3 +1,5 @@
+# Source code of this shit
+
 from pyrogram import Client, filters
 from pyrogram.errors import PeerIdInvalid
 from dotenv import load_dotenv
