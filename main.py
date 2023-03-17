@@ -30,6 +30,9 @@ async def start_command_handler(app, message):
 
     await message.reply_photo(photo=".images/hello.png", caption="<i>**Olá, eu sou um bot que manda frases diariamente em seus grupos!**</i>")
 
+# Create a Pyrogram client instance
+app = pyrogram.Client("my_bot_token", api_id=123456, api_hash="my_api_hash")
+
 # Define a function to get the daily quote
 def get_daily_quote():
     response = requests.get("https://api.quotable.io/random?language=pt")
@@ -60,7 +63,7 @@ def daily_quote_job():
     # Set the time for the daily quote to be sent (replace with your preferred time)
     daily_quote_time = "09:00"
     while True:
-        now = datetime.now()
+        now = datetime.datetime.now()
         # Check if it's time to send the daily quote
         if now.strftime("%H:%M") == daily_quote_time:
             # Send the daily quote to all active chats
@@ -70,10 +73,8 @@ def daily_quote_job():
         # Wait for 1 minute before checking again
         time.sleep(60)
 
-# Start the Pyrogram client
-app.start()
-
 # Start the daily quote job in a separate thread
+import threading
 threading.Thread(target=daily_quote_job).start()
 
 # Run the client until it's stopped
