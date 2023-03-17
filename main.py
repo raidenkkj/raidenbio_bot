@@ -6,11 +6,10 @@ import datetime
 import schedule
 import time
 import os
-
+import threading
 
 if os.path.isfile("config.env"):
     load_dotenv("config.env")
-
 
 API_ID = int(os.environ.get("API_ID"))
 API_HASH = os.environ.get("API_HASH")
@@ -66,6 +65,10 @@ def schedule_job():
 
 # Start the bot and schedule the job
 app.start()
-schedule_job()
-app.stop()
 
+# Run the schedule_job function in a separate thread
+job_thread = threading.Thread(target=schedule_job)
+job_thread.start()
+
+# Block the main thread (this is necessary to keep the bot running)
+app.idle()
