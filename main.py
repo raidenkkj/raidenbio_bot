@@ -30,9 +30,6 @@ async def start_command_handler(app, message):
 
     await message.reply_photo(photo=".images/hello.png", caption="<i>**Olá, eu sou um bot que manda frases diariamente em seus grupos!**</i>")
 
-# Create a Pyrogram client instance
-app = pyrogram.Client("my_bot_token", api_id=123456, api_hash="my_api_hash")
-
 # Define a function to get the daily quote
 def get_daily_quote():
     response = requests.get("https://api.quotable.io/random?language=pt")
