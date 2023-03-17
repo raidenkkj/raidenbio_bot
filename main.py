@@ -66,7 +66,7 @@ def schedule_job():
         time.sleep(1)
 
 # Start the bot and schedule the job
-app.start()
+app.run()
 
 # Run the schedule_job function in a separate thread
 job_thread = threading.Thread(target=schedule_job)
