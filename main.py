@@ -70,5 +70,3 @@ app.start()
 job_thread = threading.Thread(target=schedule_job)
 job_thread.start()
 
-# Block the main thread (this is necessary to keep the bot running)
-app.idle()
