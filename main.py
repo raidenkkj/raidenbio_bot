@@ -15,7 +15,7 @@ API_HASH = os.environ.get("API_HASH")
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 app = Client(name="app", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN, in_memory=True)
-
+job_queue = app.job_queue
 
 # Define a command handler for /start command
 @app.on_message(filters.command("start"))
@@ -28,7 +28,6 @@ async def start_command_handler(app, message):
 
     await message.reply_photo(photo=".images/hello.png", caption="<i>**Olá, eu sou um bot que manda frases diariamente em seus grupos!**</i>")
 
-
 # Define a command handler for /frase command
 @app.on_message(filters.command("frase"))
 async def frase_handler(app, message):
@@ -40,15 +39,14 @@ async def frase_handler(app, message):
     else:
         message.reply_text("Desculpe, não foi possível obter uma frase no momento. Tente novamente mais tarde.")
 
-
-# Define a function to send the phrase of the day
-async def send_phrase():
+# Define a function to send the phrase of the day to all users
+async def send_phrase(app, job):
     # Get a random phrase of the day from the API
     response = requests.get("https://phrases-api.herokuapp.com/phrases/pt-br/today")
     if response.status_code == 200:
         phrase = response.json()["phrase"]
         # Send the phrase to all users
-        for chat_id in app.get_dialogs():
+        for chat_id in await app.get_dialogs():
             try:
                 await app.send_message(chat_id=chat_id.id, text=phrase)
             except PeerIdInvalid:
@@ -58,9 +56,8 @@ async def send_phrase():
         # Log an error message if we couldn't get a phrase from the API
         print("Error: couldn't get phrase from API")
 
-
 # Schedule a job to send the phrase of the day every day at 9am (local time)
-app.scheduler.add_job(send_phrase, 'cron', hour=9, minute=0)
+job_queue.run_daily(send_phrase, time=datetime.time(hour=9, minute=0, second=0))
 
 # Start the bot
 app.run()
