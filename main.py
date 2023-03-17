@@ -1,4 +1,4 @@
-# Raiden bot
+# Frase do dia
 
 from pyrogram import Client, filters
 from pyrogram.errors import PeerIdInvalid
@@ -76,6 +76,7 @@ def schedule_job():
         send_phrase()
 
 # Start the bot and schedule the job
+
 if __name__ == '__main__':
     app.start()
     schedule_job()
