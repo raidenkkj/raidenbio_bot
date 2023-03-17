@@ -50,7 +50,7 @@ def send_daily_quote(chat_id):
             app.send_message(chat_id, message)
 
 # Define a command handler for the /frase command
-@app.on_message(pyrogram.filters.command("frase"))
+@app.on_message(filters.command("frase"))
 def frase_command_handler(client, message):
     # Send the daily quote to the current chat
     send_daily_quote(message.chat.id)
