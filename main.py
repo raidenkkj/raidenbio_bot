@@ -3,6 +3,7 @@ from pyrogram.errors import PeerIdInvalid
 from dotenv import load_dotenv
 import requests
 import datetime
+import schedule
 import time
 import os
 
@@ -39,35 +40,32 @@ async def frase_handler(app, message):
     else:
         message.reply_text("Desculpe, não foi possível obter uma frase no momento. Tente novamente mais tarde.")
 
-# Define a function to send the phrase of the day at a specified time
 def send_phrase():
-    # Get the current date and time
-    now = datetime.datetime.now()
-
-    # Check if the current time is after 9am (local time)
-    if now.hour >= 9:
-        # Get a random phrase of the day from the API
-        response = requests.get("https://phrases-api.herokuapp.com/phrases/pt-br/today")
-        if response.status_code == 200:
-            phrase = response.json()["phrase"]
-            # Send the phrase to all users
-            for chat_id in app.get_dialogs():
-                try:
-                    app.send_message(chat_id=chat_id.id, text=phrase)
-                except PeerIdInvalid:
-                    # Skip invalid peer IDs (e.g. deleted chats)
-                    pass
-        else:
-            # Log an error message if we couldn't get a phrase from the API
-            print("Error: couldn't get phrase from API")
+    # Get a random phrase of the day from the API
+    response = requests.get("https://phrases-api.herokuapp.com/phrases/pt-br/today")
+    if response.status_code == 200:
+        phrase = response.json()["phrase"]
+        # Send the phrase to all users
+        for chat_id in app.get_dialogs():
+            try:
+                app.send_message(chat_id=chat_id.id, text=phrase)
+            except PeerIdInvalid:
+                # Skip invalid peer IDs (e.g. deleted chats)
+                pass
+    else:
+        # Log an error message if we couldn't get a phrase from the API
+        print("Error: couldn't get phrase from API")
 
 # Schedule a job to send the phrase of the day every day at 9am (local time)
 def schedule_job():
-    scheduler = app.scheduler
-    scheduler.add_job(send_phrase, 'cron', hour=9, minute=0)
+    schedule.every().day.at("09:00").do(send_phrase)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
 # Start the bot and schedule the job
 app.start()
 schedule_job()
-app.idle()
 app.stop()
+
