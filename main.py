@@ -30,45 +30,46 @@ async def start_command_handler(app, message):
 
     await message.reply_photo(photo=".images/hello.png", caption="<i>**Olá, eu sou um bot que manda frases diariamente em seus grupos!**</i>")
 
-# Define a command handler for /frase command
-@app.on_message(filters.command("frase"))
-async def frase_handler(app, message):
-    # Get a random phrase of the day from the API
-    response = requests.get("https://phrases-api.herokuapp.com/phrases/pt-br/today")
+# Define a function to get the daily quote
+def get_daily_quote():
+    response = requests.get("https://api.quotable.io/random?language=pt")
     if response.status_code == 200:
-        phrase = response.json()["phrase"]
-        message.reply_text(phrase)
+        data = response.json()
+        return data["content"]
     else:
-        message.reply_text("Desculpe, não foi possível obter uma frase no momento. Tente novamente mais tarde.")
+        return None
 
-def send_phrase():
-    # Get a random phrase of the day from the API
-    response = requests.get("https://phrases-api.herokuapp.com/phrases/pt-br/today")
-    if response.status_code == 200:
-        phrase = response.json()["phrase"]
-        # Send the phrase to all users
-        for chat_id in app.get_dialogs():
-            try:
-                app.send_message(chat_id=chat_id.id, text=phrase)
-            except PeerIdInvalid:
-                # Skip invalid peer IDs (e.g. deleted chats)
-                pass
-    else:
-        # Log an error message if we couldn't get a phrase from the API
-        print("Error: couldn't get phrase from API")
+# Define a function to send the daily quote to the current chat
+def send_daily_quote(chat_id):
+    quote = get_daily_quote()
+    if quote:
+        # Format the message to include today's date and the daily quote
+        message = f"A frase diária de hoje é:\n\n{quote}"
+        # Send the message to the current chat
+        with app:
+            app.send_message(chat_id, message)
 
-# Schedule a job to send the phrase of the day every day at 9am (local time)
-def schedule_job():
-    schedule.every().day.at("09:00").do(send_phrase)
+# Define a command handler for the /frase command
+@app.on_message(pyrogram.filters.command("frase"))
+def frase_command_handler(client, message):
+    # Send the daily quote to the current chat
+    send_daily_quote(message.chat.id)
 
+# Define a job that runs every day to send the daily quote
+@app.on_app_launch
+async def setup_daily_quote_job(client, **kwargs):
+    # Set the time for the daily quote to be sent (replace with your preferred time)
+    daily_quote_time = "09:00"
     while True:
-        schedule.run_pending()
-        time.sleep(1)
+        now = datetime.now()
+        # Check if it's time to send the daily quote
+        if now.strftime("%H:%M") == daily_quote_time:
+            # Send the daily quote to all active chats
+            for chat in await app.get_dialogs():
+                if chat.chat.type in ["group", "supergroup"]:
+                    send_daily_quote(chat.chat.id)
+        # Wait for 1 minute before checking again
+        await pyrogram.idle()
 
-# Start the bot and schedule the job
+# Start the Pyrogram client
 app.run()
-
-# Run the schedule_job function in a separate thread
-job_thread = threading.Thread(target=schedule_job)
-job_thread.start()
-
