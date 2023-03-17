@@ -76,8 +76,6 @@ def schedule_job():
         send_phrase()
 
 # Start the bot and schedule the job
-
-if __name__ == '__main__':
-    app.start()
-    schedule_job()
-    app.stop()
+app.start()
+schedule_job()
+app.stop()
