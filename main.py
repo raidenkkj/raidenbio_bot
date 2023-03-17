@@ -74,7 +74,6 @@ def daily_quote_job():
 app.start()
 
 # Start the daily quote job in a separate thread
-import threading
 threading.Thread(target=daily_quote_job).start()
 
 # Run the client until it's stopped
